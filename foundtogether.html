@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FoundTogether</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* FoundTogether
+   Typeface: Public Sans, from the U.S. Web Design System, because this app is built
+   for public places: libraries, park districts, schools and community centers. */
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EEF2F8; --ink:#0F1B2D; --muted:#56637A; --line:#DCE2EC;
+  --brand:#2F5BEA; --brand-ink:#FFFFFF; --brand-soft:#E6ECFD; --brand-deep:#1E3FB8;
+  --amber:#F2A516; --amber-soft:#FFF1D1; --amber-ink:#3A2600;
+  --ok:#16885A; --ok-soft:#E0F3EA; --no:#C23A3A; --no-soft:#F9E3E3; --part:#9A5B00; --part-soft:#FDEFD9;
+  --map-dot:#AEB8CA; --shadow:0 1px 2px rgba(15,27,45,.06), 0 4px 14px rgba(15,27,45,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1220; --surface:#131C2E; --surface-2:#1A2540; --ink:#E8EDF7; --muted:#9AA8C2; --line:#27334D;
+    --brand:#7B9BFF; --brand-ink:#0B1220; --brand-soft:#1F2C52; --brand-deep:#2A3F8F;
+    --amber:#FFC24D; --amber-soft:#3A2D10; --amber-ink:#2A1C00;
+    --ok:#45C98A; --ok-soft:#113426; --no:#FF6B6B; --no-soft:#3B1818; --part:#FFB255; --part-soft:#3A2812;
+    --map-dot:#4A5878; --shadow:none;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1220; --surface:#131C2E; --surface-2:#1A2540; --ink:#E8EDF7; --muted:#9AA8C2; --line:#27334D;
+  --brand:#7B9BFF; --brand-ink:#0B1220; --brand-soft:#1F2C52; --brand-deep:#2A3F8F;
+  --amber:#FFC24D; --amber-soft:#3A2D10; --amber-ink:#2A1C00;
+  --ok:#45C98A; --ok-soft:#113426; --no:#FF6B6B; --no-soft:#3B1818; --part:#FFB255; --part-soft:#3A2812;
+  --map-dot:#4A5878; --shadow:none;
+  color-scheme:dark;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); }
+html{ scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px); }
+*,*::before,*::after{ box-sizing:inherit; }
+body{ margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size:16.5px; line-height:1.5; -webkit-text-size-adjust:100%; }
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--surface); }
+h1,h2,h3,h4{ line-height:1.2; margin:0; }
+h2{ font-size:1.35rem; font-weight:800; letter-spacing:-.015em; }
+h3{ font-size:1.06rem; font-weight:700; }
+h4{ font-size:1rem; font-weight:700; }
+p{ margin:.35rem 0; }
+a{ color:var(--brand); }
+button{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--amber); outline-offset:2px; border-radius:8px; }
+
+/* ---------- App bar ---------- */
+.appbar{ position:sticky; top:env(safe-area-inset-top,0px); z-index:6; background:var(--surface); border-bottom:1px solid var(--line); }
+.appbar-in{ max-width:760px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:10px; }
+.logo{ width:32px; height:32px; flex:none; }
+.brandtext h1{ font-size:1.12rem; font-weight:800; letter-spacing:-.02em; }
+.brandtext p{ margin:0; font-size:.8rem; color:var(--muted); }
+.mode{ margin-left:auto; display:flex; padding:3px; background:var(--surface-2); border-radius:999px; }
+.mode button{ border:0; background:transparent; font-size:.8rem; font-weight:700; color:var(--muted); padding:7px 11px; border-radius:999px; cursor:pointer; min-height:34px; }
+.mode button.on{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow); }
+
+/* ---------- Bottom tab bar ---------- */
+.tabbar{ position:fixed; left:0; right:0; bottom:0; z-index:8; background:var(--surface); border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px); }
+.tabbar-in{ max-width:760px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); }
+.tab{ position:relative; border:0; background:transparent; display:flex; flex-direction:column; align-items:center; gap:3px; padding:9px 4px 8px; cursor:pointer; color:var(--muted); min-height:58px; }
+.tab svg{ width:24px; height:24px; }
+.tab span.l{ font-size:.74rem; font-weight:700; }
+.tab.on{ color:var(--brand); }
+.tab.on::before{ content:""; position:absolute; top:0; left:30%; right:30%; height:3px; border-radius:0 0 3px 3px; background:var(--brand); }
+.badge{ position:absolute; top:5px; left:calc(50% + 6px); min-width:18px; height:18px; padding:0 5px; border-radius:999px; background:var(--amber); color:var(--amber-ink); font-size:.7rem; font-weight:800; line-height:18px; }
+
+main{ max-width:760px; margin:0 auto; padding:16px 16px calc(96px + env(safe-area-inset-bottom,0px)); }
+.section{ margin:22px 0 10px; display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+.section h2{ font-size:1.12rem; }
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:12px; box-shadow:var(--shadow); }
+.card.flat{ box-shadow:none; }
+.muted,.meta{ color:var(--muted); }
+.meta{ font-size:.9rem; margin:2px 0; }
+.hint{ font-size:.88rem; color:var(--muted); }
+.empty{ color:var(--muted); text-align:center; padding:26px 10px; }
+.empty .big{ font-size:2rem; display:block; margin-bottom:6px; }
+details > summary{ cursor:pointer; font-weight:700; min-height:30px; list-style-position:outside; }
+details[open] > summary{ margin-bottom:10px; }
+
+/* ---------- Buttons ---------- */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; font-weight:700; min-height:48px; padding:10px 18px;
+  border-radius:12px; border:2px solid transparent; cursor:pointer; text-decoration:none; text-align:center; line-height:1.2; }
+.btn.primary{ background:var(--brand); color:var(--brand-ink); }
+.btn.amber{ background:var(--amber); color:var(--amber-ink); }
+.btn.ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); }
+.btn.good{ background:var(--ok); color:var(--brand-ink); }
+.btn.bad{ background:transparent; color:var(--no); border-color:var(--no); }
+.btn.wide{ width:100%; }
+.btn.sm{ min-height:40px; padding:8px 14px; font-size:.92rem; }
+.link{ background:none; border:0; padding:6px 0; color:var(--muted); text-decoration:underline; cursor:pointer; min-height:34px; }
+.back{ background:none; border:0; color:var(--brand); font-weight:700; padding:6px 0; cursor:pointer; min-height:40px; display:inline-flex; align-items:center; gap:4px; }
+.row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+
+/* ---------- Home ---------- */
+.hero{ background:linear-gradient(150deg, var(--brand) 0%, var(--brand-deep) 100%); color:#fff; border-radius:20px; padding:20px 18px 18px; position:relative; overflow:hidden; }
+.hero h2{ font-size:1.55rem; color:#fff; max-width:20ch; }
+.hero p{ color:rgba(255,255,255,.88); margin:6px 0 14px; max-width:42ch; }
+.hero::after{ content:""; position:absolute; right:-40px; top:-40px; width:160px; height:160px; border-radius:50%; border:22px solid rgba(255,255,255,.08); }
+.catgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.cat{ border:0; border-radius:14px; background:rgba(255,255,255,.14); color:#fff; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 4px; cursor:pointer; min-height:76px; }
+.cat .e{ font-size:1.6rem; line-height:1; }
+.cat .t{ font-size:.76rem; font-weight:700; text-align:center; line-height:1.15; }
+.catgrid.light .cat{ background:var(--surface-2); color:var(--ink); border:2px solid transparent; }
+.catgrid.light .cat.on{ border-color:var(--brand); background:var(--brand-soft); }
+.foundbar{ display:flex; align-items:center; gap:12px; }
+.foundbar .e{ font-size:1.8rem; }
+.foundbar div{ flex:1; }
+.hscroll{ display:flex; gap:10px; overflow-x:auto; scroll-snap-type:x mandatory; padding:2px 2px 8px; margin:0 -2px; }
+.hscroll::-webkit-scrollbar{ display:none; }
+.mini{ flex:0 0 148px; scroll-snap-align:start; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px; cursor:pointer; text-align:left; box-shadow:var(--shadow); }
+.mini .thumb{ width:100%; height:86px; font-size:2.1rem; margin-bottom:8px; }
+.mini strong{ display:block; font-size:.9rem; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.mini span{ font-size:.8rem; color:var(--muted); }
+.how{ list-style:none; padding:0; margin:0; display:grid; gap:12px; counter-reset:s; }
+.how li{ display:grid; grid-template-columns:36px 1fr; gap:12px; align-items:start; }
+.how li::before{ counter-increment:s; content:counter(s); width:36px; height:36px; border-radius:50%; background:var(--brand-soft); color:var(--brand); font-weight:800; display:grid; place-items:center; }
+.strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.strip div{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px; text-align:center; }
+.strip strong{ display:block; font-size:1.4rem; font-weight:800; }
+.strip span{ font-size:.78rem; color:var(--muted); line-height:1.2; display:block; }
+
+/* ---------- Item tiles ---------- */
+.thumb{ --tc:#9aa3b5; display:grid; place-items:center; width:52px; height:52px; border-radius:12px; flex:none; font-size:1.6rem; overflow:hidden;
+  background:color-mix(in srgb, var(--tc) 24%, var(--surface)); border:1px solid color-mix(in srgb, var(--tc) 40%, var(--line)); }
+.thumb img{ width:100%; height:100%; object-fit:cover; }
+.thumb.lg{ width:64px; height:64px; font-size:2rem; }
+.item{ display:flex; gap:12px; align-items:center; }
+.item > div{ flex:1; min-width:0; }
+.item strong{ display:block; line-height:1.25; }
+.grid2{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.gcard{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px; box-shadow:var(--shadow); }
+.gcard .thumb{ width:100%; height:104px; font-size:2.4rem; margin-bottom:8px; }
+.gcard strong{ display:block; font-size:.93rem; line-height:1.25; }
+.chips{ list-style:none; display:flex; flex-wrap:wrap; gap:5px; padding:0; margin:6px 0 0; }
+.chips li{ display:inline-flex; align-items:center; gap:5px; font-size:.8rem; padding:2px 9px; border-radius:999px; background:var(--surface-2); }
+.sw{ width:12px; height:12px; border-radius:50%; border:1px solid color-mix(in srgb, var(--ink) 25%, transparent); flex:none; display:inline-block; }
+.pill-status{ display:inline-block; font-size:.76rem; font-weight:800; padding:3px 9px; border-radius:999px; background:var(--surface-2); color:var(--muted); white-space:nowrap; }
+.pill-status.match{ background:var(--amber-soft); color:var(--amber-ink); }
+.pill-status.wait{ background:var(--brand-soft); color:var(--brand); }
+.pill-status.ready{ background:var(--ok-soft); color:var(--ok); }
+.pill-status.done{ background:var(--ok); color:var(--brand-ink); }
+.pill-status.donate{ background:var(--part-soft); color:var(--part); }
+.newdot{ display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--amber); margin-left:6px; vertical-align:1px; }
+.filters{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; margin-bottom:8px; }
+.filters::-webkit-scrollbar{ display:none; }
+.fchip{ flex:none; border:1.5px solid var(--line); background:var(--surface); border-radius:999px; padding:7px 13px; font-size:.88rem; font-weight:700; cursor:pointer; min-height:38px; white-space:nowrap; }
+.fchip.on{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+.listcard{ display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; cursor:pointer; box-shadow:var(--shadow); }
+.listcard .item > div{ display:grid; gap:2px; }
+.chev{ color:var(--muted); font-size:1.3rem; }
+
+/* ---------- Wizard ---------- */
+.wiz-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.progress{ display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin:12px 0 16px; }
+.progress span{ height:5px; border-radius:999px; background:var(--line); }
+.progress span.on{ background:var(--brand); }
+.wiz h2{ font-size:1.45rem; margin-bottom:4px; }
+.wiz .sub{ color:var(--muted); margin-bottom:14px; }
+.wizfoot{ position:fixed; left:0; right:0; bottom:0; z-index:9; background:var(--surface); border-top:1px solid var(--line); padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)); }
+.wizfoot-in{ max-width:760px; margin:0 auto; display:grid; grid-template-columns:auto 1fr; gap:10px; }
+.field{ display:grid; gap:6px; margin:14px 0; font-weight:700; }
+.opt{ font-weight:400; color:var(--muted); }
+input[type="text"], input[type="date"], input[type="number"], select, textarea{
+  width:100%; font:inherit; font-weight:400; color:var(--ink); background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:11px 12px; min-height:48px; }
+input:focus, select:focus, textarea:focus{ border-color:var(--brand); outline:none; box-shadow:0 0 0 3px var(--brand-soft); }
+textarea{ resize:vertical; }
+.two{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+fieldset{ border:0; padding:0; margin:14px 0; }
+legend{ font-weight:700; padding:0; margin-bottom:8px; }
+.pills{ display:flex; flex-wrap:wrap; gap:7px; }
+.pill{ position:relative; display:inline-flex; align-items:center; gap:7px; min-height:42px; padding:7px 13px; border:1.5px solid var(--line); border-radius:999px; background:var(--surface); cursor:pointer; font-weight:600; }
+.pill input{ position:absolute; opacity:0; width:1px; height:1px; }
+.pill:has(input:checked){ border-color:var(--brand); background:var(--brand-soft); color:var(--brand); }
+.pill:has(input:focus-visible){ outline:3px solid var(--amber); outline-offset:2px; }
+.places{ display:grid; gap:8px; }
+.place{ position:relative; display:flex; align-items:center; gap:12px; padding:12px 14px; border:1.5px solid var(--line); border-radius:14px; background:var(--surface); cursor:pointer; min-height:56px; }
+.place input{ position:absolute; opacity:0; }
+.place .e{ font-size:1.4rem; }
+.place .t{ flex:1; font-weight:700; }
+.place .tick{ width:24px; height:24px; border-radius:50%; border:2px solid var(--line); display:grid; place-items:center; color:transparent; font-weight:800; font-size:.8rem; }
+.place:has(input:checked){ border-color:var(--brand); background:var(--brand-soft); }
+.place:has(input:checked) .tick{ background:var(--brand); border-color:var(--brand); color:var(--brand-ink); }
+.place:has(input:focus-visible){ outline:3px solid var(--amber); outline-offset:2px; }
+.private{ background:var(--amber-soft); border-radius:14px; padding:4px 14px 12px; }
+.lock{ display:flex; gap:10px; align-items:flex-start; font-size:.92rem; }
+.summary{ background:var(--surface-2); border-radius:14px; padding:12px 14px; }
+.summary dl{ display:grid; grid-template-columns:auto 1fr; gap:4px 12px; margin:0; font-size:.93rem; }
+.summary dt{ color:var(--muted); }
+.summary dd{ margin:0; font-weight:600; }
+.photo{ display:flex; gap:12px; align-items:center; }
+.photo label{ cursor:pointer; }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+/* ---------- Results ---------- */
+.checked{ background:var(--ok-soft); border-radius:14px; padding:12px 14px; display:flex; gap:12px; align-items:flex-start; margin-bottom:12px; }
+.checked .e{ font-size:1.4rem; }
+.ring{ flex:none; position:relative; width:64px; height:64px; }
+.ring svg{ width:64px; height:64px; transform:rotate(-90deg); }
+.ring .bg{ stroke:var(--surface-2); }
+.ring .fg{ stroke:var(--amber); stroke-linecap:round; }
+.ring.mid .fg{ stroke:var(--muted); }
+.ring b{ position:absolute; inset:0; display:grid; place-items:center; font-size:1.25rem; font-weight:800; }
+.ring.sm, .ring.sm svg{ width:50px; height:50px; }
+.ring.sm b{ font-size:1rem; }
+.topmatch{ border:2px solid var(--amber); }
+.topmatch .best{ display:inline-block; background:var(--amber); color:var(--amber-ink); font-size:.74rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; padding:3px 9px; border-radius:6px; margin-bottom:10px; }
+.mhead{ display:flex; gap:12px; align-items:center; }
+.mhead > div{ flex:1; min-width:0; }
+.mhead > .ring{ flex:0 0 auto; }
+.evidence{ list-style:none; padding:0; margin:12px 0 8px; display:grid; gap:5px; font-size:.92rem; }
+.evidence li{ display:flex; gap:8px; align-items:flex-start; }
+.ev{ flex:none; width:20px; height:20px; border-radius:50%; display:grid; place-items:center; font-size:.72rem; font-weight:800; margin-top:1px; }
+.ev.ok{ background:var(--ok-soft); color:var(--ok); }
+.ev.part{ background:var(--part-soft); color:var(--part); }
+.ev.no{ background:var(--no-soft); color:var(--no); }
+.ev.na{ background:var(--surface-2); color:var(--muted); }
+.code{ font-family:ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size:2.2rem; font-weight:700; letter-spacing:.12em; }
+.codebox{ background:var(--ok-soft); border:2px solid var(--ok); border-radius:16px; padding:16px; text-align:center; margin:12px 0; }
+.notice{ border-radius:14px; padding:12px 14px; margin:12px 0; font-size:.95rem; }
+.notice.wait{ background:var(--brand-soft); }
+.notice.bad{ background:var(--no-soft); }
+.notice.good{ background:var(--ok-soft); }
+
+/* ---------- Maps ---------- */
+.map{ width:100%; height:auto; display:block; background:var(--surface-2); border-radius:12px; }
+.map .street{ stroke:var(--line); stroke-width:6; stroke-linecap:round; fill:none; }
+.map .dot{ fill:var(--map-dot); }
+.map .label{ fill:var(--muted); font-size:10px; font-family:inherit; }
+.map .label.strong{ fill:var(--ink); font-weight:700; }
+.map .trail{ stroke:var(--brand); stroke-width:2.5; stroke-dasharray:5 5; fill:none; }
+.map .visited{ fill:var(--brand); }
+.map .pin{ fill:var(--amber); stroke:var(--surface); stroke-width:2; }
+.map .halo{ fill:none; stroke:var(--amber); stroke-width:2; opacity:.5; }
+.map .arc{ stroke:var(--ok); stroke-width:2.5; fill:none; opacity:.85; }
+.legend{ display:flex; flex-wrap:wrap; gap:4px 14px; font-size:.82rem; color:var(--muted); margin-top:8px; }
+.legend span::before{ content:""; display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:-1px; background:var(--c); }
+
+/* ---------- Staff ---------- */
+.deskchip{ display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 14px; margin-bottom:12px; }
+.deskchip .e{ font-size:1.5rem; }
+.deskchip div{ flex:1; }
+.stats{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.stat{ background:var(--surface-2); border-radius:12px; padding:10px 12px; }
+.stat strong{ display:block; font-size:1.55rem; font-weight:800; line-height:1.1; }
+.stat span{ font-size:.84rem; color:var(--muted); }
+.compare{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; }
+.compare > div{ background:var(--surface-2); border-radius:12px; padding:10px 12px; }
+.compare h4{ font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:4px; }
+mark{ background:var(--amber-soft); color:inherit; padding:0 2px; border-radius:3px; font-weight:700; }
+.codeinput{ display:grid; grid-template-columns:1fr auto; gap:8px; }
+.codeinput input{ font-family:ui-monospace, Menlo, monospace; font-size:1.3rem; letter-spacing:.15em; text-align:center; }
+.diff{ list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+.diff li{ display:grid; grid-template-columns:38px 1fr; gap:12px; align-items:start; }
+.diff .ic{ width:38px; height:38px; border-radius:11px; background:var(--brand-soft); display:grid; place-items:center; font-size:1.15rem; }
+
+.toast{ position:fixed; left:50%; transform:translateX(-50%); bottom:calc(76px + env(safe-area-inset-bottom,0px)); z-index:60;
+  width:max-content; max-width:min(92vw,520px); background:var(--ink); color:var(--bg); padding:12px 16px; border-radius:12px; font-weight:700; opacity:0; pointer-events:none; transition:opacity .2s; }
+.toast.show{ opacity:1; }
+.proto{ display:flex; gap:10px; align-items:flex-start; background:var(--amber-soft); border:1px solid color-mix(in srgb, var(--amber) 55%, transparent); border-radius:14px; padding:10px 14px; margin:12px 0; font-size:.9rem; }
+.proto strong{ display:block; }
+.wizard-on .toast{ bottom:calc(84px + env(safe-area-inset-bottom,0px)); }
+
+@media (max-width:420px){
+  .two,.compare{ grid-template-columns:1fr; }
+  .hero h2{ font-size:1.35rem; }
+  .brandtext p{ display:none; }
+}
+@media (min-width:640px){ .catgrid{ grid-template-columns:repeat(8,1fr); } .catgrid.light{ grid-template-columns:repeat(5,1fr); } .grid2{ grid-template-columns:repeat(3,1fr); } .stats{ grid-template-columns:repeat(4,1fr); } }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation:none !important; transition:none !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<header class="appbar">
+  <div class="appbar-in">
+    <svg class="logo" viewBox="0 0 40 40" aria-hidden="true">
+      <path d="M8 6h18l8 8v20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" fill="var(--brand)"/>
+      <circle cx="13" cy="13" r="3" fill="var(--surface)"/>
+      <path d="M13 24l5 5 10-11" stroke="var(--amber)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="brandtext"><h1>FoundTogether</h1><p id="townLine"></p></div>
+    <div class="mode" role="group" aria-label="View as">
+      <button data-action="mode" data-mode="resident">Resident</button>
+      <button data-action="mode" data-mode="staff">Staff</button>
+    </div>
+  </div>
+</header>
+<main id="app"></main>
+<nav class="tabbar" id="tabbar" aria-label="Main"></nav>
+<div id="wizfoot"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ------------------------------------------------------------
+   FoundTogether: one free lost-and-found network for a whole town.
+
+   The gap: lost-and-found software exists for airports, hotels and
+   festivals, and it's paid. The library, park district, schools,
+   community center and small shops in a town each keep their own box.
+   FoundTogether connects them.
+
+   What makes it different:
+   1. Free and built for small public places, not big venues.
+   2. Trail search: list every place you went, and every desk is checked.
+   3. Explainable matching: a score plus the evidence behind it.
+   4. Private verification: hidden details only the owner would know,
+      checked by desk staff, then a one-time pickup code.
+   5. Protected items: wallets, phones and keys are never shown publicly.
+   6. Unclaimed items are donated after a hold period, and the town
+      dashboard shows the impact.
+
+   Demo note: data is saved only in this browser (localStorage).
+   The Resident / Staff switch lets one device play both sides.
+------------------------------------------------------------ */
+
+const DAY = 86400000;
+const KEY = 'foundtogether-v2';
+
+// ---------- Reference data ----------
+const CATS = {
+  backpack:'Backpack or bag', jacket:'Jacket or coat', phone:'Phone', wallet:'Wallet, ID or cards', keys:'Keys',
+  bottle:'Water bottle', electronics:'Headphones or electronics', glasses:'Glasses', clothing:'Other clothing',
+  jewelry:'Jewelry or watch', umbrella:'Umbrella', book:'Book or notebook', sports:'Sports gear', toy:'Toy', other:'Something else'
+};
+const SHORT = { backpack:'Bag', jacket:'Jacket', phone:'Phone', wallet:'Wallet or ID', keys:'Keys', bottle:'Bottle', electronics:'Electronics',
+  glasses:'Glasses', clothing:'Clothing', jewelry:'Jewelry', umbrella:'Umbrella', book:'Book', sports:'Sports', toy:'Toy', other:'Other' };
+const CAT_ICON = { backpack:'🎒', jacket:'🧥', phone:'📱', wallet:'👛', keys:'🔑', bottle:'🥤', electronics:'🎧', glasses:'👓',
+  clothing:'👕', jewelry:'⌚', umbrella:'☂️', book:'📓', sports:'🏐', toy:'🧸', other:'📦' };
+const HOME_CATS = ['backpack','jacket','phone','wallet','keys','bottle','electronics','glasses'];
+const PROTECTED = ['phone', 'wallet', 'keys'];          // never shown in public listings
+const RELATED = [['jacket','clothing'], ['electronics','phone'], ['backpack','sports']];
+const COLORS = ['black','white','gray','silver','blue','red','pink','purple','green','yellow','gold','orange','brown','tan','multicolor'];
+const COLOR_CSS = { black:'#1d1d1f', white:'#d9dde4', gray:'#8e8e93', silver:'#b9bcc2', blue:'#2f5bea', red:'#d93a3a', pink:'#f28bb8', purple:'#7d4cdb',
+  green:'#2e9d5b', yellow:'#f5c518', gold:'#c9a227', orange:'#f2832b', brown:'#7a4e2d', tan:'#d2b48c', multicolor:'#9b7bd8' };
+const SWATCH = c => c === 'multicolor' ? 'conic-gradient(#d93a3a, #f5c518, #2e9d5b, #2f5bea, #7d4cdb, #d93a3a)' : c === 'white' ? '#ffffff' : COLOR_CSS[c];
+const NEAR_COLORS = [['gray','silver'], ['brown','tan'], ['yellow','gold'], ['red','pink']];
+const VENUE_TYPES = { library:['Library','📚'], park:['Park district','🏀'], school:['School','🏫'], community:['Community center','🏛️'],
+  business:['Local business','☕'], faith:['Place of worship','🕊️'], transit:['Transit','🚉'] };
+const STOP = new Set('the and with for from that this was were are has have had inside small big one two some very its into onto near your you our out off but not lost found item left right front back side'.split(' '));
+// Matching weights (shown in the Network tab, so the score is never a black box)
+const W = { category:30, color:20, brand:10, words:15, date:10, place:15 };
+const SHOW_MIN = 45;   // lowest score shown as a possible match
+const ALERT_MIN = 60;  // score that alerts the owner
+
+// ---------- Icons for the tab bar ----------
+const ICONS = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
+  browse:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  mine:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h10l6 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><circle cx="8" cy="8" r="1.5"/><path d="m8 14 3 3 5-6"/></svg>',
+  network:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="10" cy="18" r="2.5"/><path d="M8.3 7 15.6 7.6M7 8.3l2.2 7.3M16.6 10 11.8 16"/></svg>',
+  claims:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>',
+  shelf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="m3 7.5 9 4.5 9-4.5M12 12v9"/></svg>',
+  add:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>',
+  desk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6M3 21h18"/></svg>'
+};
+const TABS = {
+  resident:[['home','Home'], ['browse','Browse'], ['mine','My reports'], ['network','Network']],
+  staff:[['claims','Claims'], ['shelf','Shelf'], ['add','Add item'], ['desk','Desk']]
+};
+
+// ---------- Sample town (all places, people and items are made up) ----------
+function seed(){
+  const now = Date.now(), ago = n => now - n * DAY;
+  return {
+    town:'Oak Grove', mode:'resident', tab:{ resident:'home', staff:'claims' }, meVenue:'v2',
+    venues:[
+      { id:'v1', name:'Oak Grove Public Library', short:'Library', type:'library', x:1.2, y:0.9, holdDays:30 },
+      { id:'v2', name:'Oak Grove Park District Rec Center', short:'Rec Center', type:'park', x:2.6, y:1.7, holdDays:30 },
+      { id:'v3', name:'Oak Grove High School', short:'High School', type:'school', x:2.0, y:2.7, holdDays:30 },
+      { id:'v4', name:'Oak Grove Community Center', short:'Community Center', type:'community', x:0.7, y:2.3, holdDays:30 },
+      { id:'v5', name:'Main Street Coffee', short:'Main St Coffee', type:'business', x:1.7, y:1.5, holdDays:14 }
+    ],
+    items:[
+      { id:'i1', venueId:'v2', category:'backpack', colors:['blue'], brand:'JanSport', desc:'Blue backpack with a front zipper pocket', priv:'Fox keychain on the zipper. Math notebook and a graphing calculator inside.', foundOn:ago(1), foundWhere:'Bleachers by court 2', status:'held', by:'desk' },
+      { id:'i2', venueId:'v1', category:'wallet', colors:['brown'], brand:'', desc:'Brown leather wallet', priv:'Driver’s license for M. Torres and two library cards.', foundOn:ago(2), foundWhere:'Study table, second floor', status:'held', by:'desk' },
+      { id:'i3', venueId:'v5', category:'keys', colors:['silver'], brand:'Toyota', desc:'Car key with three house keys', priv:'Green bottle-opener key ring.', foundOn:ago(3), foundWhere:'Window counter', status:'held', by:'desk' },
+      { id:'i4', venueId:'v3', category:'jacket', colors:['black'], brand:'The North Face', desc:'Black puffer jacket, size M', priv:'Bus pass and gum wrapper in the left pocket.', foundOn:ago(5), foundWhere:'Gym locker room', status:'held', by:'desk' },
+      { id:'i5', venueId:'v4', category:'bottle', colors:['green'], brand:'Hydro Flask', desc:'Green insulated water bottle with stickers', priv:'Sticker of a cat playing guitar.', foundOn:ago(9), foundWhere:'Room B after yoga', status:'held', by:'desk' },
+      { id:'i6', venueId:'v1', category:'umbrella', colors:['black'], brand:'', desc:'Black compact umbrella', priv:'Wooden handle and one bent rib.', foundOn:ago(12), foundWhere:'Umbrella stand by the entrance', status:'held', by:'desk' },
+      { id:'i7', venueId:'v2', category:'jacket', colors:['red'], brand:'', desc:'Kids’ red rain jacket', priv:'Name tag inside the collar starts with L.', foundOn:ago(4), foundWhere:'Playground bench', status:'claim', by:'desk' },
+      { id:'i8', venueId:'v3', category:'clothing', colors:['gray'], brand:'', desc:'Gray hoodie', priv:'“Oak Grove Track” printed on the back.', foundOn:ago(41), foundWhere:'Bleachers', status:'held', by:'desk' },
+      { id:'i9', venueId:'v4', category:'glasses', colors:['black'], brand:'', desc:'Black reading glasses in a soft case', priv:'Blue case with a crack in the clasp.', foundOn:ago(36), foundWhere:'Card room', status:'held', by:'desk' },
+      { id:'i13', venueId:'v5', category:'electronics', colors:['black'], brand:'Sony', desc:'Black over-ear headphones', priv:'Left ear cushion is peeling.', foundOn:ago(2), foundWhere:'Couch by the window', status:'held', by:'desk' },
+      { id:'i10', venueId:'v2', category:'sports', colors:['white'], brand:'Mikasa', desc:'Volleyball', priv:'', foundOn:ago(15), foundWhere:'Court 1', status:'reunited', reunitedAt:ago(13), cross:true, fromVenue:'v3', by:'desk' },
+      { id:'i11', venueId:'v1', category:'book', colors:['multicolor'], brand:'', desc:'Paperback novel', priv:'', foundOn:ago(20), foundWhere:'Children’s section', status:'reunited', reunitedAt:ago(19), cross:false, fromVenue:'v1', by:'desk' },
+      { id:'i12', venueId:'v5', category:'electronics', colors:['white'], brand:'Apple', desc:'White earbuds case', priv:'', foundOn:ago(10), foundWhere:'Table by the door', status:'reunited', reunitedAt:ago(7), cross:true, fromVenue:'v1', by:'desk' }
+    ],
+    reports:[
+      { id:'p1', category:'jacket', colors:['red'], brand:'', desc:'Kids’ red rain jacket with a hood', priv:'Name tag inside the collar says Lily.',
+        from:startOf(ago(5)), to:endOf(ago(4)), trail:['v4','v2'], createdAt:ago(3), status:'open',
+        claim:{ itemId:'i7', status:'pending', at:ago(1) }, seen:['i7'], declined:[] }
+    ]
+  };
+}
+
+// ---------- Storage ----------
+function load(){ try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) {} return null; }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); return true; } catch (e) { toast('Couldn’t save on this device. Try a smaller photo.'); return false; } }
+let S = load() || seed();
+const ui = { wiz:null, openReport:null, justSearched:null, browseCat:'', browseVenue:'', shelf:'all', openKeys:new Set(['m-top']), confirmReset:false, staffPhoto:null, staffCat:'' };
+
+// ---------- Small helpers ----------
+const V = id => S.venues.find(v => v.id === id);
+const I = id => S.items.find(i => i.id === id);
+const P = id => S.reports.find(r => r.id === id);
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const day = t => new Date(t).toLocaleDateString([], { month:'short', day:'numeric' });
+function startOf(t){ const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); }
+function endOf(t){ const d = new Date(t); d.setHours(23,59,59,999); return d.getTime(); }
+function dstr(t){ const d = new Date(t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function parseDay(s, end){ if (!s) return null; const [y, m, d] = s.split('-').map(Number); const x = new Date(y, m - 1, d); if (end) x.setHours(23,59,59,999); return x.getTime(); }
+function ago(t){ const d = Math.floor((startOf(Date.now()) - startOf(t)) / DAY); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : `${d} days ago`; }
+const vicon = v => (VENUE_TYPES[v.type] || ['', '📍'])[1];
+const isProtected = cat => PROTECTED.includes(cat);
+const joinList = a => a.length < 2 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+const miles = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+const det = key => `data-key="${key}" ${ui.openKeys.has(key) ? 'open' : ''}`;
+const sw = c => `<span class="sw" style="background:${SWATCH(c)}"></span>`;
+const colorChips = list => (list || []).map(c => `<li>${sw(c)}${c}</li>`).join('');
+function thumb(x, cls = ''){
+  const prot = isProtected(x.category), tc = COLOR_CSS[(x.colors || [])[0]] || '#9aa3b5';
+  const inner = x.photo && !prot ? `<img src="${x.photo}" alt="">` : CAT_ICON[x.category] || '📦';
+  return `<span class="thumb ${cls}" style="--tc:${tc}" aria-hidden="true">${inner}</span>`;
+}
+let toastTimer;
+function toast(msg){ const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3400); }
+function words(s){ return new Set(String(s || '').toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length >= 3 && !STOP.has(w)).map(w => w.length > 4 && w.endsWith('s') ? w.slice(0, -1) : w)); }
+function shared(a, b){ const A = words(a), B = words(b); return [...A].filter(w => B.has(w)); }
+
+// ---------- Matching engine ----------
+// Compares a lost report with a found item and returns a score out of 100 plus the evidence behind it.
+// Only public fields are scored. Private details are kept for the desk's verification step.
+function scoreMatch(rep, item){
+  const ev = []; let pts = 0;
+  const related = RELATED.some(([a, b]) => (a === rep.category && b === item.category) || (b === rep.category && a === item.category));
+  // 1. Category
+  if (rep.category === item.category) { pts += W.category; ev.push(['ok', 'Same type of item']); }
+  else if (related) { pts += W.category / 2; ev.push(['part', 'Similar type of item']); }
+  else return null;
+  // 2. Date: an item can't be found before it was lost
+  if (item.foundOn < rep.from - DAY) return null;
+  const late = Math.ceil((item.foundOn - rep.to) / DAY);
+  if (item.foundOn <= rep.to + DAY) { pts += W.date; ev.push(['ok', 'Found during the time you lost it']); }
+  else if (late <= 7) { pts += W.date / 2; ev.push(['part', `Found ${late} ${late === 1 ? 'day' : 'days'} after you lost it`]); }
+  else ev.push(['no', 'Found more than a week after you lost it']);
+  // 3. Color
+  const rc = rep.colors || [], ic = item.colors || [];
+  const exact = rc.find(c => ic.includes(c));
+  const near = !exact && rc.find(c => ic.some(d => NEAR_COLORS.some(([x, y]) => (x === c && y === d) || (y === c && x === d))));
+  if (exact) { pts += W.color; ev.push(['ok', `Color matches: ${exact}`]); }
+  else if (near) { pts += W.color / 2; ev.push(['part', 'Color is close']); }
+  else if (rc.length && ic.length) { pts -= 10; ev.push(['no', 'Different color']); }
+  else ev.push(['na', 'Color not recorded']);
+  // 4. Brand
+  const rb = (rep.brand || '').trim().toLowerCase(), ib = (item.brand || '').trim().toLowerCase();
+  if (rb && ib) {
+    if (rb === ib || rb.includes(ib) || ib.includes(rb)) { pts += W.brand; ev.push(['ok', `Same brand: ${item.brand}`]); }
+    else { pts -= W.brand; ev.push(['no', 'Different brand']); }
+  } else ev.push(['na', 'Brand not recorded on both']);
+  // 5. Description words
+  const common = shared(rep.desc, item.desc);
+  if (common.length) { pts += Math.min(W.words, common.length * 5); ev.push(['ok', `Description shares: ${common.slice(0, 4).join(', ')}`]); }
+  // 6. Place: found somewhere on the owner's trail, or near it?
+  const trail = (rep.trail || []).map(V).filter(Boolean), at = V(item.venueId);
+  if (trail.some(v => v.id === item.venueId)) { pts += W.place; ev.push(['ok', `Found at a place you visited: ${at.short}`]); }
+  else if (trail.length) {
+    const d = Math.min(...trail.map(v => miles(v, at)));
+    if (d <= 1.5) { pts += Math.round(W.place / 2); ev.push(['part', `Found ${d.toFixed(1)} mi from a place you visited`]); }
+    else ev.push(['no', 'Not near the places you listed']);
+  }
+  return { score: Math.max(0, Math.min(100, Math.round(pts))), ev };
+}
+function matchesFor(rep){
+  if (rep.status !== 'open') return [];
+  return S.items
+    .filter(i => (i.status === 'held' || i.status === 'arriving' || (i.status === 'claim' && rep.claim && rep.claim.itemId === i.id)) && !(rep.declined || []).includes(i.id))
+    .map(i => ({ item:i, m:scoreMatch(rep, i) }))
+    .filter(x => x.m && x.m.score >= SHOW_MIN)
+    .sort((a, b) => b.m.score - a.m.score)
+    .slice(0, 5);
+}
+// When a new item is logged, check every open report and alert likely owners.
+function alertOwners(item){
+  let n = 0;
+  S.reports.forEach(r => { if (r.status !== 'open') return; const m = scoreMatch(r, item); if (m && m.score >= ALERT_MIN) n++; });
+  return n;
+}
+const readyToDonate = i => i.status === 'held' && Date.now() - i.foundOn > V(i.venueId).holdDays * DAY;
+const unseenCount = r => matchesFor(r).filter(x => !(r.seen || []).includes(x.item.id)).length;
+function deskClaims(vid){ return S.reports.filter(r => r.claim && r.claim.status === 'pending' && I(r.claim.itemId) && I(r.claim.itemId).venueId === vid); }
+
+// ---------- Shell: app bar, tab bar, wizard footer ----------
+function render(){
+  document.getElementById('townLine').textContent = `${S.town}’s shared lost and found`;
+  document.querySelectorAll('[data-mode]').forEach(b => { const on = b.dataset.mode === S.mode; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  document.body.classList.toggle('wizard-on', !!ui.wiz);
+  const tab = S.tab[S.mode];
+  const badges = {
+    mine: S.reports.reduce((n, r) => n + unseenCount(r) + (r.claim && r.claim.status === 'approved' ? 1 : 0), 0),
+    claims: deskClaims(S.meVenue).length
+  };
+  const bar = document.getElementById('tabbar');
+  bar.hidden = !!ui.wiz;
+  bar.innerHTML = `<div class="tabbar-in">${TABS[S.mode].map(([k, l]) =>
+    `<button class="tab ${tab === k ? 'on' : ''}" data-action="tab" data-tab="${k}" ${tab === k ? 'aria-current="page"' : ''}>${ICONS[k]}<span class="l">${l}</span>${badges[k] ? `<span class="badge" aria-label="${badges[k]} new">${badges[k]}</span>` : ''}</button>`).join('')}</div>`;
+  const app = document.getElementById('app');
+  if (ui.wiz) { app.innerHTML = viewWizard(); document.getElementById('wizfoot').innerHTML = wizFooter(); return; }
+  document.getElementById('wizfoot').innerHTML = '';
+  const views = { home:viewHome, browse:viewBrowse, mine:viewMine, network:viewNetwork, claims:viewClaims, shelf:viewShelf, add:viewAdd, desk:viewDesk };
+  app.innerHTML = views[tab]();
+}
+
+// ---------- Resident: Home ----------
+function viewHome(){
+  const pub = S.items.filter(i => (i.status === 'held' || i.status === 'arriving') && !isProtected(i.category)).sort((a, b) => b.foundOn - a.foundOn).slice(0, 8);
+  const re = S.items.filter(i => i.status === 'reunited').length;
+  const held = S.items.filter(i => i.status === 'held' || i.status === 'claim' || i.status === 'arriving').length;
+  return `
+  <section class="hero">
+    <h2>Lost something in ${esc(S.town)}?</h2>
+    <p>One report checks every partner place at once. Tap what you lost to start.</p>
+    <div class="catgrid">${HOME_CATS.map(k => `<button class="cat" data-action="start-lost" data-cat="${k}"><span class="e" aria-hidden="true">${CAT_ICON[k]}</span><span class="t">${SHORT[k]}</span></button>`).join('')}</div>
+    <div class="row"><button class="btn ghost sm" data-action="start-lost" style="background:rgba(255,255,255,.14);color:#fff;border-color:transparent">Something else</button></div>
+  </section>
+
+  <div class="proto" role="note"><span aria-hidden="true">🧪</span><div><strong>Working prototype</strong>Oak Grove is a sample town, and its places, people and items are made up. Everything you enter is saved only on this device and never sent anywhere.</div></div>
+
+  <div class="card" style="margin-top:12px"><div class="foundbar"><span class="e" aria-hidden="true">🙌</span>
+    <div><strong>Found something?</strong><p class="meta" style="margin:0">Log it and drop it at any partner desk.</p></div>
+    <button class="btn primary sm" data-action="start-found">Log it</button></div></div>
+
+  <div class="strip">
+    <div><strong>${S.venues.length}</strong><span>places in the network</span></div>
+    <div><strong>${held}</strong><span>items waiting for owners</span></div>
+    <div><strong>${re}</strong><span>reunited so far</span></div>
+  </div>
+
+  <div class="section"><h2>Recently found</h2><button class="link" data-action="tab" data-tab="browse">See all</button></div>
+  <div class="hscroll">${pub.map(i => `<button class="mini" data-action="browse-cat" data-cat="${i.category}">${thumb(i)}<strong>${esc(i.desc)}</strong><span>${vicon(V(i.venueId))} ${esc(V(i.venueId).short)}, ${ago(i.foundOn)}</span></button>`).join('')}</div>
+
+  <div class="section"><h2>How it works</h2></div>
+  <div class="card flat"><ol class="how">
+    <li><div><strong>Report it once</strong><p class="meta">Tell us what you lost and every place you went.</p></div></li>
+    <li><div><strong>We check every desk</strong><p class="meta">The library, park district, schools and shops share one search. New items are checked against your report automatically.</p></div></li>
+    <li><div><strong>Prove it’s yours, then pick it up</strong><p class="meta">Staff check private details only you would know, then send a one-time pickup code.</p></div></li>
+  </ol></div>`;
+}
+
+// ---------- Resident: Browse ----------
+function viewBrowse(){
+  const pub = S.items.filter(i => i.status === 'held' || i.status === 'arriving');
+  const cats = [...new Set(pub.filter(i => !isProtected(i.category)).map(i => i.category))];
+  const shown = pub.filter(i => !isProtected(i.category) && (!ui.browseCat || i.category === ui.browseCat) && (!ui.browseVenue || i.venueId === ui.browseVenue))
+                   .sort((a, b) => b.foundOn - a.foundOn);
+  const hidden = pub.filter(i => isProtected(i.category) && (!ui.browseVenue || i.venueId === ui.browseVenue)).length;
+  return `
+  <h2>Found in ${esc(S.town)}</h2>
+  <p class="meta" style="margin-bottom:12px">Only what anyone could see is shown. Private details stay with the desk.</p>
+  <div class="filters" role="group" aria-label="Filter by type">
+    <button class="fchip ${!ui.browseCat ? 'on' : ''}" data-action="browse-cat" data-cat="">All</button>
+    ${cats.map(k => `<button class="fchip ${ui.browseCat === k ? 'on' : ''}" data-action="browse-cat" data-cat="${k}">${CAT_ICON[k]} ${SHORT[k]}</button>`).join('')}
+  </div>
+  <label class="field" style="margin-top:4px">Place<select data-action="browse-venue"><option value="">Every place</option>${S.venues.map(v => `<option value="${v.id}" ${ui.browseVenue === v.id ? 'selected' : ''}>${vicon(v)} ${esc(v.name)}</option>`).join('')}</select></label>
+  ${shown.length ? `<div class="grid2">${shown.map(i => `<div class="gcard">${thumb(i)}<strong>${esc(i.desc)}</strong>
+      <p class="meta" style="margin:4px 0 0">${vicon(V(i.venueId))} ${esc(V(i.venueId).short)}</p><p class="meta" style="margin:0">Found ${ago(i.foundOn)}${i.status === 'arriving' ? ', arriving' : ''}</p></div>`).join('')}</div>`
+    : `<div class="empty"><span class="big">🔍</span>Nothing like that right now.</div>`}
+  ${hidden ? `<div class="card flat" style="margin-top:12px"><div class="lock"><span aria-hidden="true">🔒</span><div><strong>${hidden} protected ${hidden === 1 ? 'item' : 'items'} held privately</strong><p class="meta" style="margin:0">Wallets, phones and keys are never listed. Report yours lost to be matched.</p></div></div>
+    <div class="row"><button class="btn primary sm" data-action="start-lost">Report a lost item</button></div></div>` : ''}`;
+}
+
+// ---------- Resident: My reports ----------
+function reportStatus(rep){
+  if (rep.status === 'reunited') return ['done', 'Reunited'];
+  const c = rep.claim;
+  if (c && c.status === 'approved') return ['ready', 'Pickup ready'];
+  if (c && c.status === 'pending') return ['wait', 'Claim pending'];
+  const n = matchesFor(rep).length;
+  return n ? ['match', `${n} ${n === 1 ? 'match' : 'matches'}`] : ['', 'Searching'];
+}
+function viewMine(){
+  if (ui.openReport && P(ui.openReport)) return reportDetail(P(ui.openReport));
+  const mine = S.reports.filter(r => r.status !== 'closed').sort((a, b) => b.createdAt - a.createdAt);
+  return `<h2>My reports</h2>
+    <p class="meta" style="margin-bottom:12px">We keep checking every new item logged in ${esc(S.town)} against these.</p>
+    ${mine.length ? mine.map(r => { const [cls, label] = reportStatus(r), nu = unseenCount(r);
+      return `<button class="listcard" data-action="open-report" data-id="${r.id}"><div class="item">${thumb(r, 'lg')}
+        <div><strong>${esc(r.desc || CATS[r.category])}${nu ? '<span class="newdot" aria-label="new match"></span>' : ''}</strong>
+        <span class="meta">Lost ${day(r.from)}${dstr(r.from) !== dstr(r.to) ? ' to ' + day(r.to) : ''}</span>
+        <span><span class="pill-status ${cls}">${label}</span></span></div><span class="chev" aria-hidden="true">›</span></div></button>`; }).join('')
+    : `<div class="empty"><span class="big">🧭</span>No reports yet.<div class="row" style="justify-content:center"><button class="btn primary" data-action="start-lost">Report a lost item</button></div></div>`}`;
+}
+function reportDetail(rep){
+  const ms = matchesFor(rep);
+  const c = rep.claim, citem = c && I(c.itemId), cv = citem && V(citem.venueId);
+  const active = c && (c.status === 'pending' || c.status === 'approved');
+  const trail = (rep.trail || []).map(V).filter(Boolean);
+  let claimBox = '';
+  if (c && c.status === 'pending') claimBox = `<div class="notice wait"><strong>Claim sent to ${esc(cv.name)}.</strong> Staff will compare your private details with theirs.</div>`;
+  if (c && c.status === 'approved') claimBox = `<div class="codebox"><p class="meta" style="margin:0">Your pickup code</p><div class="code">${c.code.slice(0, 3)} ${c.code.slice(3)}</div>
+      <p style="margin:6px 0 0">Show this at <strong>${esc(cv.name)}</strong>.${isProtected(citem.category) ? ' Bring a photo ID.' : ''}</p></div>`;
+  if (c && c.status === 'declined') claimBox = `<div class="notice bad">The desk checked and that item isn’t yours. Your report stays open and we’ll keep looking.</div>`;
+  if (rep.status === 'reunited') claimBox = `<div class="notice good"><strong>🎉 Reunited ${day(citem.reunitedAt)}.</strong> Picked up from ${esc(cv.name)}.</div>`;
+  const checked = ui.justSearched === rep.id ? `<div class="checked"><span class="e" aria-hidden="true">✅</span><div><strong>Checked all ${S.venues.length} places in ${esc(S.town)}</strong>
+      <p class="meta" style="margin:0">${esc(joinList(S.venues.map(v => v.short)))}. ${ms.length ? `${ms.length} possible ${ms.length === 1 ? 'match' : 'matches'}.` : 'No matches yet, but we’ll keep checking.'}</p></div></div>` : '';
+  // Mark these matches as seen now that the owner has opened the report
+  setTimeout(() => { rep.seen = rep.seen || []; let ch = false; ms.forEach(x => { if (!rep.seen.includes(x.item.id)) { rep.seen.push(x.item.id); ch = true; } }); if (ch) { save(); refreshBar(); } }, 0);
+  const [cls, label] = reportStatus(rep);
+  return `<button class="back" data-action="close-report-view">‹ My reports</button>
+    <div class="card"><div class="item">${thumb(rep, 'lg')}<div><strong style="font-size:1.1rem">${esc(rep.desc || CATS[rep.category])}</strong>
+      <span class="meta">${CATS[rep.category]}. Lost ${day(rep.from)}${dstr(rep.from) !== dstr(rep.to) ? ' to ' + day(rep.to) : ''}</span>
+      <span><span class="pill-status ${cls}">${label}</span></span></div></div>
+      <ul class="chips">${colorChips(rep.colors)}${rep.brand ? `<li>${esc(rep.brand)}</li>` : ''}${trail.map(v => `<li>${vicon(v)} ${esc(v.short)}</li>`).join('')}</ul>
+      ${rep.priv ? `<p class="meta" style="margin-top:8px">🔒 Private details (desks only): ${esc(rep.priv)}</p>` : ''}
+      ${claimBox}</div>
+    ${rep.status === 'open' ? `${checked}
+      ${ms.length ? ms.map((x, idx) => matchCard(rep, x, idx, active)).join('') : `<div class="empty"><span class="big">⏳</span>No matches yet. Every new item logged anywhere in ${esc(S.town)} is checked against your report.</div>`}
+      <div style="text-align:center"><button class="link" data-action="close-report" data-id="${rep.id}">I found it another way. Close this report.</button></div>` : ''}`;
+}
+function ring(score, small){
+  const r = small ? 19 : 26, c = 2 * Math.PI * r, s = small ? 50 : 64, w = small ? 5 : 6;
+  return `<div class="ring ${small ? 'sm' : ''} ${score < ALERT_MIN ? 'mid' : ''}" role="img" aria-label="Match score ${score} out of 100">
+    <svg viewBox="0 0 ${s} ${s}"><circle class="bg" cx="${s / 2}" cy="${s / 2}" r="${r}" fill="none" stroke-width="${w}"/>
+    <circle class="fg" cx="${s / 2}" cy="${s / 2}" r="${r}" fill="none" stroke-width="${w}" stroke-dasharray="${(c * score / 100).toFixed(1)} ${c.toFixed(1)}"/></svg><b>${score}</b></div>`;
+}
+function matchCard(rep, { item, m }, idx, active){
+  const v = V(item.venueId), prot = isProtected(item.category), top = idx === 0;
+  const isNew = !(rep.seen || []).includes(item.id);
+  const mine = rep.claim && rep.claim.itemId === item.id && (rep.claim.status === 'pending' || rep.claim.status === 'approved');
+  const sym = { ok:'✓', part:'~', no:'✕', na:'–' };
+  const evidence = `<ul class="evidence">${m.ev.map(([k, t]) => `<li><span class="ev ${k}" aria-hidden="true">${sym[k]}</span><span>${esc(t)}</span></li>`).join('')}</ul>`;
+  const why = top ? evidence + `<details ${det('m-top')}><summary>See where it was found</summary>${miniMap(rep, item)}</details>`
+    : `<details ${det('m-' + rep.id + item.id)}><summary>Why this match?</summary>${evidence}${miniMap(rep, item)}</details>`;
+  return `<article class="card ${top && m.score >= ALERT_MIN ? 'topmatch' : ''}">
+    ${top && m.score >= ALERT_MIN ? '<span class="best">Best match</span>' : ''}
+    <div class="mhead">${thumb(item)}<div>
+      <strong>${prot ? `A ${CATS[item.category].toLowerCase()} like yours` : esc(item.desc)}${isNew ? '<span class="newdot" aria-label="new"></span>' : ''}</strong>
+      <p class="meta" style="margin:2px 0 0">${vicon(v)} ${esc(v.name)}</p>
+      <p class="meta" style="margin:0">Found ${ago(item.foundOn)}${item.status === 'arriving' ? ', on its way to the desk' : ''}</p></div>
+      ${ring(m.score, true)}</div>
+    ${prot ? '<p class="meta" style="margin-top:10px">🔒 Protected item: details are hidden to keep it safe. The desk will check your private details.</p>' : ''}
+    ${why}
+    ${mine || active ? '' : `<button class="btn ${top ? 'primary' : 'ghost'} wide" data-action="claim" data-rep="${rep.id}" data-item="${item.id}" style="margin-top:8px">This might be mine</button>`}
+  </article>`;
+}
+// Map coordinates: places have x/y positions in miles, scaled into the SVG.
+const MX = x => 24 + x * 82, MY = y => 22 + y * 70;
+const baseMap = () => `<path class="street" d="M10 ${MY(1.3)} H 300"/><path class="street" d="M${MX(1.5)} 10 V 230"/><path class="street" d="M10 ${MY(2.5)} Q 150 ${MY(2.1)} 300 ${MY(2.6)}"/>`;
+function miniMap(rep, item){
+  const trail = (rep.trail || []).map(V).filter(Boolean), at = V(item.venueId);
+  const dots = S.venues.map(v => {
+    const onTrail = trail.some(t => t.id === v.id), isAt = v.id === at.id;
+    return `${isAt ? `<circle class="halo" cx="${MX(v.x)}" cy="${MY(v.y)}" r="15"/><circle class="pin" cx="${MX(v.x)}" cy="${MY(v.y)}" r="8"/>` : `<circle class="${onTrail ? 'visited' : 'dot'}" cx="${MX(v.x)}" cy="${MY(v.y)}" r="${onTrail ? 6 : 4.5}"/>`}
+      <text class="label ${isAt || onTrail ? 'strong' : ''}" x="${MX(v.x)}" y="${MY(v.y) + (isAt ? 26 : 18)}" text-anchor="middle">${esc(v.short)}</text>`;
+  }).join('');
+  return `<svg class="map" viewBox="0 0 320 240" role="img" aria-label="Map: found at ${esc(at.short)}. You visited ${esc(joinList(trail.map(v => v.short)) || 'no listed places')}.">
+    ${baseMap()}${trail.length > 1 ? `<polyline class="trail" points="${trail.map(v => `${MX(v.x)},${MY(v.y)}`).join(' ')}"/>` : ''}${dots}</svg>
+    <div class="legend"><span style="--c:var(--brand)">Places you visited</span><span style="--c:var(--amber)">Where it was found</span></div>`;
+}
+
+// ---------- Resident: guided report (wizard) ----------
+const STEPS = { lost:['what','looks','when','private'], found:['what','looks','where','private'] };
+function startWizard(kind, cat){ ui.wiz = { kind, step: cat ? 1 : 0, data:{ category:cat || '', colors:[], trail:[], from:dstr(Date.now() - DAY), to:dstr(Date.now()), date:dstr(Date.now()), desk:S.meVenue } }; render(); window.scrollTo(0, 0); }
+function viewWizard(){
+  const w = ui.wiz, d = w.data, step = STEPS[w.kind][w.step], lost = w.kind === 'lost';
+  const head = `<div class="wiz-head"><button class="back" data-action="wiz-cancel">✕ Cancel</button><span class="meta">Step ${w.step + 1} of 4</span></div>
+    <div class="progress" aria-hidden="true">${[0,1,2,3].map(i => `<span class="${i <= w.step ? 'on' : ''}"></span>`).join('')}</div>`;
+  let body = '';
+  if (step === 'what') body = `<h2>${lost ? 'What did you lose?' : 'What did you find?'}</h2><p class="sub">Tap one.</p>
+    <div class="catgrid light">${Object.keys(CATS).map(k => `<button class="cat ${d.category === k ? 'on' : ''}" data-action="wiz-cat" data-cat="${k}"><span class="e" aria-hidden="true">${CAT_ICON[k]}</span><span class="t">${SHORT[k]}</span></button>`).join('')}</div>`;
+  if (step === 'looks') body = `<h2>What does it look like?</h2><p class="sub">${CAT_ICON[d.category]} ${CATS[d.category]}. ${lost ? 'Anything you remember helps.' : 'Describe what anyone could see.'}</p>
+    <fieldset><legend>Color</legend><div class="pills">${COLORS.map(c => `<label class="pill"><input type="checkbox" name="w-color" value="${c}" ${d.colors.includes(c) ? 'checked' : ''}>${sw(c)}${c}</label>`).join('')}</div></fieldset>
+    <label class="field">Short description<input type="text" id="w-desc" value="${esc(d.desc || '')}" placeholder="${lost ? 'Example: Blue backpack with a front pocket' : 'Example: Black umbrella'}"></label>
+    <label class="field">Brand <span class="opt">(optional)</span><input type="text" id="w-brand" value="${esc(d.brand || '')}" placeholder="Example: JanSport"></label>
+    ${!lost && !isProtected(d.category) ? `<div class="field">Photo <span class="opt">(optional, helps the owner recognize it)</span>
+      <div class="photo">${d.photo ? `<span class="thumb lg"><img src="${d.photo}" alt="Photo of the found item"></span>` : ''}
+      <label class="btn ghost sm">${d.photo ? 'Change photo' : 'Add a photo'}<input class="sr" type="file" accept="image/*" capture="environment" data-action="wiz-photo"></label></div></div>` : ''}`;
+  if (step === 'when') body = `<h2>When and where?</h2><p class="sub">Pick every place you went. Not sure? Pick them all.</p>
+    <div class="two"><label class="field">Lost between<input type="date" id="w-from" value="${d.from}" max="${dstr(Date.now())}"></label>
+    <label class="field">and<input type="date" id="w-to" value="${d.to}" max="${dstr(Date.now())}"></label></div>
+    <fieldset><legend>Places you went</legend><div class="places">${S.venues.map(v => `<label class="place"><input type="checkbox" name="w-trail" value="${v.id}" ${d.trail.includes(v.id) ? 'checked' : ''}>
+      <span class="e" aria-hidden="true">${vicon(v)}</span><span class="t">${esc(v.name)}</span><span class="tick" aria-hidden="true">✓</span></label>`).join('')}</div></fieldset>`;
+  if (step === 'where') body = `<h2>Where was it?</h2><p class="sub">Please take it to a partner desk rather than keeping it. Desks check every claim, so you never have to meet a stranger.</p>
+    <div class="two"><label class="field">Date found<input type="date" id="w-date" value="${d.date}" max="${dstr(Date.now())}"></label>
+    <label class="field">Where exactly?<input type="text" id="w-where" value="${esc(d.where || '')}" placeholder="Example: Bench by the pond"></label></div>
+    <fieldset><legend>Which desk will you drop it at?</legend><div class="places">${S.venues.map(v => `<label class="place"><input type="radio" name="w-desk" value="${v.id}" ${d.desk === v.id ? 'checked' : ''}>
+      <span class="e" aria-hidden="true">${vicon(v)}</span><span class="t">${esc(v.name)}</span><span class="tick" aria-hidden="true">✓</span></label>`).join('')}</div></fieldset>`;
+  if (step === 'private') {
+    const trail = d.trail.map(V).filter(Boolean);
+    body = `<h2>${lost ? 'One detail only you would know' : 'Anything that proves ownership?'}</h2>
+      <p class="sub">${lost ? 'This is how the desk knows it’s really yours. It’s never shown publicly.' : 'Only desk staff see this. It helps them return it to the right person.'}</p>
+      <div class="private"><label class="field">Private details<textarea id="w-priv" rows="3" placeholder="${lost ? 'A keychain, what’s inside, a scratch or a name tag' : 'What’s inside, marks or name tags. Never card or ID numbers.'}">${esc(d.priv || '')}</textarea></label>
+      <div class="lock"><span aria-hidden="true">🔒</span><span>Never shown in listings or to other residents.</span></div></div>
+      <h3 style="margin-top:18px">Check your report</h3>
+      <div class="summary" style="margin-top:8px"><dl>
+        <dt>Item</dt><dd>${CAT_ICON[d.category]} ${esc(d.desc || CATS[d.category])}</dd>
+        ${d.colors.length ? `<dt>Color</dt><dd>${esc(d.colors.join(', '))}</dd>` : ''}
+        ${d.brand ? `<dt>Brand</dt><dd>${esc(d.brand)}</dd>` : ''}
+        ${lost ? `<dt>Lost</dt><dd>${day(parseDay(d.from))}${d.from !== d.to ? ' to ' + day(parseDay(d.to)) : ''}</dd><dt>Places</dt><dd>${trail.length ? esc(joinList(trail.map(v => v.short))) : 'Not sure'}</dd>`
+          : `<dt>Found</dt><dd>${day(parseDay(d.date))}${d.where ? ', ' + esc(d.where) : ''}</dd><dt>Drop-off</dt><dd>${esc(V(d.desk).name)}</dd>`}
+      </dl></div>`;
+  }
+  return `<div class="wiz">${head}${body}</div>`;
+}
+function wizFooter(){
+  const w = ui.wiz, last = w.step === 3, first = w.step === 0;
+  const label = last ? (w.kind === 'lost' ? `Search all ${S.venues.length} places` : 'Log it and notify the desk') : 'Next';
+  return `<div class="wizfoot"><div class="wizfoot-in">
+    <button class="btn ghost" data-action="wiz-back" ${first ? 'disabled style="opacity:.4"' : ''}>Back</button>
+    ${STEPS[w.kind][w.step] === 'what' ? `<button class="btn primary" data-action="wiz-next" ${w.data.category ? '' : 'disabled style="opacity:.5"'}>${label}</button>` : `<button class="btn primary" data-action="wiz-next">${label}</button>`}
+  </div></div>`;
+}
+// Save whatever is on the current step into the wizard's data.
+function readStep(){
+  const d = ui.wiz.data, step = STEPS[ui.wiz.kind][ui.wiz.step];
+  if (step === 'looks') { d.colors = checked('w-color'); d.desc = val('w-desc'); d.brand = val('w-brand'); }
+  if (step === 'when') { d.from = val('w-from'); d.to = val('w-to'); d.trail = checked('w-trail'); }
+  if (step === 'where') { d.date = val('w-date'); d.where = val('w-where'); d.desk = (checked('w-desk')[0]) || d.desk; }
+  if (step === 'private') d.priv = val('w-priv');
+}
+function validStep(){
+  const d = ui.wiz.data, step = STEPS[ui.wiz.kind][ui.wiz.step];
+  if (step === 'what' && !d.category) return 'Tap the type of item.';
+  if (step === 'looks' && !d.desc && !d.colors.length) return 'Add a short description or a color.';
+  if (step === 'looks' && ui.wiz.kind === 'found' && !d.desc) return 'Add a short description.';
+  if (step === 'when' && (!d.from || !d.to || parseDay(d.from) > parseDay(d.to, true))) return 'Check the dates. The first should come before the second.';
+  if (step === 'private' && ui.wiz.kind === 'lost' && !d.priv) return 'Add one private detail so the desk can confirm it’s yours.';
+  return '';
+}
+function finishWizard(){
+  const d = ui.wiz.data;
+  if (ui.wiz.kind === 'lost') {
+    const rep = { id:'p' + uid(), category:d.category, colors:d.colors, brand:d.brand || '', desc:d.desc || '', priv:d.priv || '',
+      from:parseDay(d.from), to:parseDay(d.to, true), trail:d.trail, createdAt:Date.now(), status:'open', claim:null, seen:[], declined:[] };
+    S.reports.push(rep); save();
+    ui.wiz = null; S.mode = 'resident'; S.tab.resident = 'mine'; ui.openReport = rep.id; ui.justSearched = rep.id; ui.openKeys.add('m-top');
+    render(); window.scrollTo(0, 0);
+  } else {
+    const item = { id:'i' + uid(), venueId:d.desk, category:d.category, colors:d.colors, brand:d.brand || '', desc:d.desc, priv:d.priv || '',
+      photo:d.photo || null, foundOn:parseDay(d.date) || Date.now(), foundWhere:d.where || '', status:'arriving', by:'resident' };
+    S.items.push(item); const n = alertOwners(item);
+    if (!save()) { S.items.pop(); return; }
+    ui.wiz = null; S.tab.resident = 'home'; render(); window.scrollTo(0, 0);
+    toast(`Thank you. ${V(item.venueId).short} is expecting it.${n ? ` ${n} possible ${n === 1 ? 'owner was' : 'owners were'} alerted.` : ''}`);
+  }
+}
+
+// ---------- Resident: Network ----------
+function viewNetwork(){
+  const re = S.items.filter(i => i.status === 'reunited');
+  const cross = re.filter(i => i.cross).length;
+  const donated = S.items.filter(i => i.status === 'donated').length;
+  const avg = re.length ? (re.reduce((s, i) => s + (i.reunitedAt - i.foundOn), 0) / re.length / DAY) : 0;
+  const counts = v => S.items.filter(i => i.venueId === v.id && (i.status === 'held' || i.status === 'claim' || i.status === 'arriving')).length;
+  const arcs = re.filter(i => i.cross && V(i.fromVenue) && V(i.venueId)).map(i => {
+    const a = V(i.fromVenue), b = V(i.venueId), x1 = MX(a.x), y1 = MY(a.y), x2 = MX(b.x), y2 = MY(b.y);
+    return `<path class="arc" d="M${x1} ${y1} Q ${(x1 + x2) / 2} ${Math.min(y1, y2) - 40} ${x2} ${y2}"/>`;
+  }).join('');
+  const dots = S.venues.map(v => { const n = counts(v); return `<circle class="visited" cx="${MX(v.x)}" cy="${MY(v.y)}" r="${6 + Math.min(10, n * 2)}" opacity=".85"/>
+    <text class="label strong" x="${MX(v.x)}" y="${MY(v.y) + 24}" text-anchor="middle">${esc(v.short)} (${n})</text>`; }).join('');
+  return `<h2>${esc(S.town)}’s network</h2>
+  <p class="meta" style="margin-bottom:12px">Every partner place shares one lost and found.</p>
+  <div class="card"><div class="stats">
+    <div class="stat"><strong>${re.length}</strong><span>Items reunited</span></div>
+    <div class="stat"><strong>${cross}</strong><span>Found at a different place than the owner listed first</span></div>
+    <div class="stat"><strong>${donated}</strong><span>Unclaimed items donated</span></div>
+    <div class="stat"><strong>${re.length ? avg.toFixed(1) : '0'}</strong><span>Average days to reunite</span></div>
+  </div></div>
+  <div class="card"><svg class="map" viewBox="0 0 320 240" role="img" aria-label="Map of ${S.venues.length} partner places sized by items held, with lines for reunions across places.">${baseMap()}${arcs}${dots}</svg>
+    <div class="legend"><span style="--c:var(--brand)">Partner place (size shows items held)</span><span style="--c:var(--ok)">Reunion across two places</span></div></div>
+
+  <div class="section"><h2>Why FoundTogether is different</h2></div>
+  <div class="card flat"><ul class="diff">
+    <li><span class="ic">🏛️</span><div><strong>Free for public places.</strong> Lost-and-found software is usually sold to airports, hotels and festivals. Libraries, park districts, schools and small shops get it free.</div></li>
+    <li><span class="ic">🧭</span><div><strong>Trail search.</strong> Most people don’t know where they lost something, so you list every place you went and every desk is checked at once.</div></li>
+    <li><span class="ic">🔍</span><div><strong>Matches you can understand.</strong> Every match shows a score and the evidence behind it.</div></li>
+    <li><span class="ic">🔒</span><div><strong>Private verification.</strong> Owners describe details only they would know. Staff compare them, then issue a one-time pickup code.</div></li>
+    <li><span class="ic">🛡️</span><div><strong>Protected items.</strong> Wallets, phones and keys are never listed publicly.</div></li>
+    <li><span class="ic">💛</span><div><strong>Nothing goes to waste.</strong> Unclaimed items are flagged for donation after each desk’s hold period.</div></li>
+  </ul></div>
+
+  <details class="card flat" ${det('how')}><summary>How matching works</summary>
+    <p>Each found item is compared with each open lost report using only public details. Points add up to 100:</p>
+    <ul class="evidence">
+      <li><span class="ev ok">${W.category}</span><span>Same type of item (half for a similar type, like a hoodie and a jacket)</span></li>
+      <li><span class="ev ok">${W.color}</span><span>Color matches (half for a close color, minus 10 for a different one)</span></li>
+      <li><span class="ev ok">${W.place}</span><span>Found at a place on the owner’s trail (half if within 1.5 miles)</span></li>
+      <li><span class="ev ok">${W.words}</span><span>Description shares words, 5 points each</span></li>
+      <li><span class="ev ok">${W.brand}</span><span>Same brand (minus ${W.brand} if the brands differ)</span></li>
+      <li><span class="ev ok">${W.date}</span><span>Found during the time it was lost (half if within a week after)</span></li>
+    </ul>
+    <p class="meta">Items found before they were lost are never matched. Scores of ${SHOW_MIN} or more are shown and ${ALERT_MIN} or more alerts the owner. Private details are never scored: only staff use them, to verify a claim.</p>
+  </details>
+
+  <div class="section"><h2>Partner places</h2></div>
+  ${S.venues.map(v => `<div class="card flat"><div class="item"><span class="thumb" style="--tc:var(--brand)">${vicon(v)}</span><div><strong>${esc(v.name)}</strong>
+    <span class="meta">${VENUE_TYPES[v.type][0]}. Holding ${counts(v)}. Reunited ${S.items.filter(i => i.venueId === v.id && i.status === 'reunited').length}.</span></div></div></div>`).join('')}
+
+  <details class="card flat" ${det('join')}><summary>Add your place to the network</summary>
+    <p class="meta">Free for any library, school, park, community center, place of worship or local business in ${esc(S.town)}.</p>
+    <label class="field">Name<input type="text" id="j-name" placeholder="Example: Oak Grove YMCA"></label>
+    <label class="field">Type<select id="j-type">${Object.entries(VENUE_TYPES).map(([k, [l, e]]) => `<option value="${k}">${e} ${l}</option>`).join('')}</select></label>
+    <label class="field">Short name for maps<input type="text" id="j-short" maxlength="16" placeholder="Example: YMCA"></label>
+    <button class="btn primary" data-action="join">Join the network</button>
+  </details>
+  <details class="card flat" ${det('reset')}><summary>Reset demo</summary>
+    <p class="hint">Restores the sample town and clears everything saved on this device.</p>
+    <button class="btn bad" data-action="reset">${ui.confirmReset ? 'Tap again to reset' : 'Reset demo'}</button></details>`;
+}
+
+// ---------- Staff ----------
+function deskHeader(){
+  const v = V(S.meVenue);
+  return `<div class="deskchip"><span class="e" aria-hidden="true">${vicon(v)}</span><div><strong>${esc(v.name)}</strong><span class="meta" style="display:block">Staff view</span></div>
+    <button class="link" data-action="tab" data-tab="desk">Switch</button></div>`;
+}
+function itemRow(i, action){
+  const v = V(i.venueId);
+  let pill = `<span class="pill-status">Day ${Math.max(1, Math.ceil((Date.now() - i.foundOn) / DAY))} of ${v.holdDays}</span>`;
+  if (i.status === 'claim') pill = '<span class="pill-status wait">Claim open</span>';
+  else if (i.status === 'arriving') pill = '<span class="pill-status wait">Arriving</span>';
+  else if (readyToDonate(i)) pill = '<span class="pill-status donate">Ready to donate</span>';
+  return `<div class="card flat"><div class="item">${thumb(i)}<div><strong>${esc(i.desc)}</strong>
+      <span class="meta">${CATS[i.category]}${isProtected(i.category) ? '. 🔒 Protected' : ''}. Found ${ago(i.foundOn)}${i.foundWhere ? ', ' + esc(i.foundWhere) : ''}</span>
+      ${i.priv ? `<span class="meta">Private: ${esc(i.priv)}</span>` : ''}<span>${pill}</span></div></div>${action || ''}</div>`;
+}
+function viewClaims(){
+  if (!V(S.meVenue)) S.meVenue = S.venues[0].id;
+  const claims = deskClaims(S.meVenue);
+  const cards = claims.map(r => {
+    const it = I(r.claim.itemId), m = scoreMatch(r, it) || { score:0 };
+    const hits = shared(r.priv, it.priv);
+    const re = hits.length ? new RegExp('\\b(' + hits.join('|') + ')[a-z]*', 'gi') : null;
+    const hl = txt => re ? esc(txt).replace(re, w => `<mark>${w}</mark>`) : esc(txt);
+    return `<div class="card">
+      <div class="mhead">${thumb(it, 'lg')}<div><strong>${esc(it.desc)}</strong><p class="meta" style="margin:2px 0 0">Found ${ago(it.foundOn)}, ${esc(it.foundWhere)}</p></div>${ring(m.score, true)}</div>
+      <div class="compare">
+        <div><h4>Owner says</h4><p style="margin:0">${r.priv ? hl(r.priv) : '<em>Nothing given</em>'}</p></div>
+        <div><h4>Your notes</h4><p style="margin:0">${it.priv ? hl(it.priv) : '<em>Nothing recorded</em>'}</p></div>
+      </div>
+      ${hits.length ? `<div class="notice good" style="margin:0 0 10px"><strong>${hits.length} private ${hits.length === 1 ? 'detail matches' : 'details match'}:</strong> ${esc(hits.join(', '))}</div>`
+        : `<div class="notice wait" style="margin:0 0 10px">No private details overlap. Ask the owner something only they would know before approving.</div>`}
+      <div class="two"><button class="btn good" data-action="approve" data-rep="${r.id}">Approve</button><button class="btn bad" data-action="decline" data-rep="${r.id}">Not a match</button></div>
+      <p class="hint" style="margin-top:8px">You make the final call. Approving sends the owner a one-time pickup code.</p>
+    </div>`;
+  }).join('');
+  return `${deskHeader()}
+    <div class="card"><h3>Owner at the desk?</h3><p class="meta">Enter the pickup code from their screen.</p>
+      <div class="codeinput" style="margin-top:10px"><input type="text" id="code" inputmode="numeric" maxlength="7" placeholder="000 000" aria-label="Pickup code"><button class="btn primary" data-action="release">Release</button></div></div>
+    <div class="section"><h2>Claims to review</h2><span class="pill-status ${claims.length ? 'match' : ''}">${claims.length}</span></div>
+    ${claims.length ? cards : '<div class="empty"><span class="big">✅</span>No claims waiting.</div>'}`;
+}
+function viewShelf(){
+  if (!V(S.meVenue)) S.meVenue = S.venues[0].id;
+  const here = S.items.filter(i => i.venueId === S.meVenue);
+  const groups = {
+    all: here.filter(i => i.status === 'held' || i.status === 'claim' || i.status === 'arriving'),
+    claim: here.filter(i => i.status === 'claim'),
+    arriving: here.filter(i => i.status === 'arriving'),
+    donate: here.filter(readyToDonate),
+    done: here.filter(i => i.status === 'reunited' || i.status === 'donated')
+  };
+  const labels = { all:'On the shelf', claim:'Claim open', arriving:'Arriving', donate:'Ready to donate', done:'History' };
+  const list = groups[ui.shelf] || groups.all;
+  const action = i => i.status === 'arriving' ? `<button class="btn ghost sm" data-action="receive" data-id="${i.id}" style="margin-top:10px">Mark received</button>`
+    : readyToDonate(i) ? `<button class="btn ghost sm" data-action="donate" data-id="${i.id}" style="margin-top:10px">Mark donated</button>`
+    : i.status === 'reunited' ? '<p class="meta" style="margin-top:8px">✅ Reunited ' + day(i.reunitedAt) + '</p>'
+    : i.status === 'donated' ? '<p class="meta" style="margin-top:8px">💛 Donated ' + day(i.donatedAt) + '</p>' : '';
+  return `${deskHeader()}
+    <div class="filters" role="group" aria-label="Filter shelf">${Object.keys(groups).map(k => `<button class="fchip ${ui.shelf === k ? 'on' : ''}" data-action="shelf" data-f="${k}">${labels[k]} (${groups[k].length})</button>`).join('')}</div>
+    ${ui.shelf === 'donate' && list.length ? `<p class="meta">Unclaimed after this desk’s ${V(S.meVenue).holdDays}-day hold. Clothing can go to a coat drive and glasses to an eyeglass recycling program.</p>` : ''}
+    ${list.length ? list.sort((a, b) => b.foundOn - a.foundOn).map(i => itemRow(i, action(i))).join('') : '<div class="empty"><span class="big">📦</span>Nothing here.</div>'}`;
+}
+function viewAdd(){
+  const cat = ui.staffCat;
+  return `${deskHeader()}<h2>Log a found item</h2><p class="meta">Likely owners anywhere in the network are alerted automatically.</p>
+    <fieldset><legend>Type of item</legend><div class="catgrid light">${Object.keys(CATS).map(k => `<button class="cat ${cat === k ? 'on' : ''}" data-action="staff-cat" data-cat="${k}" aria-pressed="${cat === k}"><span class="e" aria-hidden="true">${CAT_ICON[k]}</span><span class="t">${SHORT[k]}</span></button>`).join('')}</div></fieldset>
+    <fieldset><legend>Color</legend><div class="pills">${COLORS.map(c => `<label class="pill"><input type="checkbox" name="d-color" value="${c}">${sw(c)}${c}</label>`).join('')}</div></fieldset>
+    <label class="field">Public description<input type="text" id="d-desc" placeholder="What anyone could see"></label>
+    <div class="two"><label class="field">Brand <span class="opt">(optional)</span><input type="text" id="d-brand"></label>
+    <label class="field">Date found<input type="date" id="d-date" value="${dstr(Date.now())}" max="${dstr(Date.now())}"></label></div>
+    <label class="field">Where in the building<input type="text" id="d-where" placeholder="Example: Study table, second floor"></label>
+    ${cat && isProtected(cat) ? '' : `<div class="field">Photo <span class="opt">(optional)</span><div class="photo">${ui.staffPhoto ? `<span class="thumb lg"><img src="${ui.staffPhoto}" alt="Photo of the item"></span>` : ''}
+      <label class="btn ghost sm">${ui.staffPhoto ? 'Change photo' : 'Add a photo'}<input class="sr" type="file" accept="image/*" capture="environment" data-action="staff-photo"></label></div></div>`}
+    <div class="private"><label class="field">Private notes <span class="opt">(staff only)</span><textarea id="d-priv" rows="2" placeholder="What’s inside, marks, name tags. Never card or ID numbers."></textarea></label></div>
+    <button class="btn primary wide" data-action="log-item" style="margin-top:14px">Log item and check for owners</button>`;
+}
+function viewDesk(){
+  const v = V(S.meVenue), here = S.items.filter(i => i.venueId === v.id);
+  return `<h2>Your desk</h2>
+    <label class="field">Partner place <span class="opt">(demo: pick any)</span><select data-action="pick-venue">${S.venues.map(x => `<option value="${x.id}" ${x.id === v.id ? 'selected' : ''}>${vicon(x)} ${esc(x.name)}</option>`).join('')}</select></label>
+    <div class="card"><div class="stats">
+      <div class="stat"><strong>${here.filter(i => ['held','claim','arriving'].includes(i.status)).length}</strong><span>On the shelf</span></div>
+      <div class="stat"><strong>${deskClaims(v.id).length}</strong><span>Claims to review</span></div>
+      <div class="stat"><strong>${here.filter(i => i.status === 'reunited').length}</strong><span>Reunited</span></div>
+      <div class="stat"><strong>${here.filter(i => i.status === 'donated').length}</strong><span>Donated</span></div>
+    </div></div>
+    <div class="card flat"><label class="field" style="margin-top:0">Hold items for this many days before donating<input type="number" id="hold" min="1" max="365" value="${v.holdDays}"></label>
+      <button class="btn ghost sm" data-action="save-hold">Save</button></div>
+    <div class="card flat"><h3>Good practice</h3><ul style="margin:8px 0 0; padding-left:20px" class="meta">
+      <li>Never write card, ID or account numbers in notes.</li><li>Ask for a photo ID before releasing wallets, phones or keys.</li><li>If private details don’t overlap, ask the owner a question only they could answer.</li></ul></div>`;
+}
+
+// ---------- Actions ----------
+const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+const checked = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i => i.value);
+// Re-draw after marking matches as seen, keeping the scroll position.
+function refreshBar(){ if (ui.wiz) return; const y = window.scrollY; render(); window.scrollTo(0, y); }
+function go(mode, tab){ S.mode = mode; S.tab[mode] = tab; ui.openReport = null; save(); render(); window.scrollTo(0, 0); }
+
+document.addEventListener('click', ev => {
+  const t = ev.target.closest('[data-action]'); if (!t || t.disabled) return;
+  const a = t.dataset.action;
+  switch (a) {
+    case 'mode': ui.wiz = null; go(t.dataset.mode, S.tab[t.dataset.mode]); break;
+    case 'tab': ui.justSearched = null; go(S.mode, t.dataset.tab); break;
+    case 'start-lost': startWizard('lost', t.dataset.cat); break;
+    case 'start-found': startWizard('found'); break;
+    case 'wiz-cancel': ui.wiz = null; render(); break;
+    case 'wiz-cat': ui.wiz.data.category = t.dataset.cat; ui.wiz.step = 1; render(); window.scrollTo(0, 0); break;
+    case 'wiz-back': readStep(); if (ui.wiz.step > 0) ui.wiz.step--; render(); window.scrollTo(0, 0); break;
+    case 'wiz-next': {
+      readStep(); const err = validStep(); if (err) { toast(err); break; }
+      if (ui.wiz.step === 3) { finishWizard(); break; }
+      ui.wiz.step++; render(); window.scrollTo(0, 0); break;
+    }
+    case 'browse-cat': ui.browseCat = t.dataset.cat || ''; if (S.tab.resident !== 'browse') go('resident', 'browse'); else render(); break;
+    case 'open-report': ui.openReport = t.dataset.id; ui.justSearched = null; render(); window.scrollTo(0, 0); break;
+    case 'close-report-view': ui.openReport = null; ui.justSearched = null; render(); window.scrollTo(0, 0); break;
+    case 'claim': {
+      const rep = P(t.dataset.rep), item = I(t.dataset.item);
+      if (!rep.priv) { toast('Add a private detail first, so the desk can check it’s yours.'); break; }
+      rep.claim = { itemId:item.id, status:'pending', at:Date.now() }; item.status = 'claim';
+      save(); render(); window.scrollTo(0, 0);
+      toast(`Claim sent to ${V(item.venueId).short}. They’ll check your private details.`);
+      break;
+    }
+    case 'close-report': { const rep = P(t.dataset.id); rep.status = 'closed'; if (rep.claim && I(rep.claim.itemId) && I(rep.claim.itemId).status === 'claim') I(rep.claim.itemId).status = 'held'; ui.openReport = null; save(); render(); toast('Report closed. Glad you found it.'); break; }
+
+    case 'approve': { const rep = P(t.dataset.rep); rep.claim.status = 'approved'; rep.claim.code = String(Math.floor(100000 + Math.random() * 900000)); save(); render(); toast('Approved. The owner now sees a pickup code.'); break; }
+    case 'decline': { const rep = P(t.dataset.rep), item = I(rep.claim.itemId); rep.claim.status = 'declined'; rep.declined = [...(rep.declined || []), item.id]; item.status = 'held'; save(); render(); toast('Declined. The item is back on your shelf.'); break; }
+    case 'release': {
+      const code = val('code').replace(/\D/g, '');
+      const rep = S.reports.find(r => r.claim && r.claim.status === 'approved' && r.claim.code === code && I(r.claim.itemId).venueId === S.meVenue);
+      if (!rep) { toast('That code doesn’t match an approved claim at this desk.'); break; }
+      const item = I(rep.claim.itemId);
+      item.status = 'reunited'; item.reunitedAt = Date.now(); item.fromVenue = (rep.trail || [])[0] || item.venueId; item.cross = item.fromVenue !== item.venueId;
+      rep.claim.status = 'done'; rep.status = 'reunited';
+      save(); render(); toast(`🎉 Reunited! ${item.desc} is back with its owner.`);
+      break;
+    }
+    case 'shelf': ui.shelf = t.dataset.f; render(); break;
+    case 'receive': I(t.dataset.id).status = 'held'; save(); render(); toast('Received. It’s on your shelf now.'); break;
+    case 'donate': { const i = I(t.dataset.id); i.status = 'donated'; i.donatedAt = Date.now(); save(); render(); toast('Marked as donated.'); break; }
+    case 'staff-cat': {
+      ui.staffCat = t.dataset.cat;
+      document.querySelectorAll('[data-action="staff-cat"]').forEach(b => { const on = b.dataset.cat === ui.staffCat; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      break;
+    }
+    case 'log-item': {
+      const category = ui.staffCat, desc = val('d-desc');
+      if (!category) { toast('Tap the type of item.'); break; }
+      if (!desc) { toast('Add a public description.'); break; }
+      const item = { id:'i' + uid(), venueId:S.meVenue, category, colors:checked('d-color'), brand:val('d-brand'), desc, priv:val('d-priv'),
+        photo:isProtected(category) ? null : ui.staffPhoto, foundOn:parseDay(val('d-date')) || Date.now(), foundWhere:val('d-where'), status:'held', by:'desk' };
+      S.items.push(item); const n = alertOwners(item);
+      if (!save()) { S.items.pop(); break; }
+      ui.staffCat = ''; ui.staffPhoto = null; ui.shelf = 'all';
+      go('staff', 'shelf');
+      toast(n ? `Logged. ${n} possible ${n === 1 ? 'owner' : 'owners'} alerted across the network.` : 'Logged. It will be checked against every new lost report.');
+      break;
+    }
+    case 'save-hold': { const n = parseInt(val('hold'), 10); if (n > 0) { V(S.meVenue).holdDays = n; save(); render(); toast('Saved.'); } break; }
+    case 'join': {
+      const name = val('j-name'); if (!name) { toast('Add a name.'); break; }
+      S.venues.push({ id:'v' + uid(), name, short:val('j-short') || name.slice(0, 16), type:val('j-type'), x:0.5 + Math.random() * 2.4, y:0.6 + Math.random() * 2.2, holdDays:30 });
+      save(); render(); toast(`${name} joined the network.`);
+      break;
+    }
+    case 'reset': {
+      if (!ui.confirmReset) { ui.confirmReset = true; t.textContent = 'Tap again to reset'; setTimeout(() => { ui.confirmReset = false; if (t.isConnected) t.textContent = 'Reset demo'; }, 4000); break; }
+      ui.confirmReset = false; S = seed(); ui.openReport = null; ui.justSearched = null; ui.browseCat = ''; ui.browseVenue = ''; save(); render(); window.scrollTo(0, 0); toast('Demo reset.');
+      break;
+    }
+  }
+});
+document.addEventListener('change', async ev => {
+  const t = ev.target;
+  if (t.matches('[data-action="pick-venue"]')) { S.meVenue = t.value; save(); render(); }
+  if (t.matches('[data-action="browse-venue"]')) { ui.browseVenue = t.value; render(); }
+  if (t.matches('[data-action="wiz-photo"]') && t.files && t.files[0]) { readStep(); try { ui.wiz.data.photo = await shrink(t.files[0]); render(); } catch (e) { toast('That photo couldn’t be read.'); } }
+  if (t.matches('[data-action="staff-photo"]') && t.files && t.files[0]) {
+    // Keep what staff already typed while the photo is added
+    const keep = { desc:val('d-desc'), brand:val('d-brand'), where:val('d-where'), priv:val('d-priv'), date:val('d-date'), colors:checked('d-color') };
+    try { ui.staffPhoto = await shrink(t.files[0]); } catch (e) { toast('That photo couldn’t be read.'); return; }
+    render();
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+    set('d-desc', keep.desc); set('d-brand', keep.brand); set('d-where', keep.where); set('d-priv', keep.priv); set('d-date', keep.date);
+    keep.colors.forEach(c => { const el = document.querySelector(`input[name="d-color"][value="${c}"]`); if (el) el.checked = true; });
+  }
+});
+document.addEventListener('toggle', ev => { const k = ev.target.dataset && ev.target.dataset.key; if (k) ev.target.open ? ui.openKeys.add(k) : ui.openKeys.delete(k); }, true);
+
+// Shrink photos so they fit in browser storage (max 640px, JPEG).
+function shrink(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const img = new Image(); img.onerror = reject;
+      img.onload = () => {
+        const s = Math.min(1, 640 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.6));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
